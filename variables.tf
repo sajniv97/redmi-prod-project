@@ -31,4 +31,14 @@ variable "project_owner" {
   description = "project owner"
   default     = "sajni"
 }
+variable "domain_name" {
+  type        = string
+  description = "domain name"
+  default     = "vannarath.site"
+}
 
+variable "hostname" {
+  type        = string
+  description = "hostname"
+  default     = "terraform"
+}
