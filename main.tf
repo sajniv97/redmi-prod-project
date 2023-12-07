@@ -73,3 +73,23 @@ resource "aws_security_group" "remote_access" {
     Environment = var.project_env
   }
 }
+resource "aws_instance" "frontend" {
+
+  ami                    = var.ami_id
+  instance_type          = var.instance_type
+  key_name               = aws_key_pair.auth_key.key_name
+  user_data              = file("setup.sh")
+  vpc_security_group_ids = [aws_security_group.web-access.id, aws_security_group.remote_access.id]
+
+  tags = {
+    Name        = "${var.project_name}-${var.project_env}-frontend"
+    Project     = var.project_name
+    Environment = var.project_env
+  }
+
+  lifecycle {
+
+    create_before_destroy = true
+  }
+}
+
