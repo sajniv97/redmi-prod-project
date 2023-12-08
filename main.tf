@@ -38,8 +38,6 @@ resource "aws_security_group" "web-access" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-
-
   egress {
     from_port        = 0
     to_port          = 0
@@ -100,11 +98,21 @@ resource "aws_instance" "frontend" {
     create_before_destroy = true
   }
 }
+resource "aws_eip" "frontend" {
+  instance = aws_instance.frontend.id
+  domain   = "vpc"
+  tags = {
+    Name        = "${var.project_name}-${var.project_env}-frontend"
+    Project     = var.project_name
+    Environment = var.project_env
+  }
+}
+
 resource "aws_route53_record" "frontend" {
 
   zone_id = data.aws_route53_zone.official.id
   name    = "${var.hostname}.${var.domain_name}"
   type    = "A"
   ttl     = 300
-  records = [aws_instance.frontend.public_ip]
+  records = [aws_eip.frontend.public_ip]
 }
